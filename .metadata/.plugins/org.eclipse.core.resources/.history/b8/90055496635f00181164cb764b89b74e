@@ -1,0 +1,117 @@
+package com.qa.orangeHRM;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+
+import cucumber.api.PendingException;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+import static org.junit.Assert.*;
+import java.util.Random;	
+
+
+public class OrangeStepDefinition {
+	
+	
+	WebDriver driver;
+	HomePage homepage;
+	Dashboard dashpage;
+	AddEmployeePage addemployee;
+	EmployeeListPage employeelist;
+	
+	Random rand = new Random();
+
+	
+	private Random username = rand;
+	private String password = "pass";
+	private String firstname = "mark";
+	private String lastname = "led";
+	
+	@Before	
+	public void setup() {
+		
+		
+int rrand = (int) Math.random()*10;
+		
+		char ranC = (char) rrand;
+		
+		String myName = ranC + "hg" + ranC;
+		
+		System.out.println(myName);
+		
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Admin\\web files\\chromedriver_win32\\chromedriver.exe");
+		driver = new ChromeDriver();	
+		driver.manage().window().maximize();
+		
+	}
+	
+	@Given("^the Add Employee Tab$")
+	public void the_Add_Employee_Tab() {
+		homepage = PageFactory.initElements(driver, HomePage.class);
+		homepage.goToPage(driver, "http://opensource.demo.orangehrmlive.com/index.php/dashboard");
+		assertEquals("http://opensource.demo.orangehrmlive.com/index.php/dashboard", homepage.getURL(driver));
+		
+		homepage.enterUsername("Admin");
+		homepage.enterPassword("admin");
+		
+		dashpage = PageFactory.initElements(driver, Dashboard.class);
+		dashpage.ClickPIM();
+		dashpage.ClickAddEmployee();
+		assertEquals("http://opensource.demo.orangehrmlive.com/index.php/pim/addEmployee", homepage.getURL(driver));
+			
+	}
+	
+	
+
+	@When("^I fill out the Employee Details correctly$")
+	public void i_fill_out_the_Employee_Details_correctly() {
+		addemployee = PageFactory.initElements(driver, AddEmployeePage.class);
+		addemployee.enterFirstName(firstname);
+		addemployee.enterLastName(lastname);
+	    
+	}
+
+	@When("^I choose to create Login Details$")
+	public void i_choose_to_create_Login_Details() {
+		addemployee.CreateLoginDetails();
+		
+	   
+	}
+
+	@When("^I fill out the Login Details correctly$")
+	public void i_fill_out_the_Login_Details_correctly()  {
+		
+		
+		
+		
+		
+//		addemployee.createUsername(username);
+		addemployee.createPassword(password);
+		addemployee.confirmPassword(password);
+		
+		
+	}
+
+	@When("^I click the Save button$")
+	public void i_click_the_Save_button()  {
+		addemployee.clickSave();
+	}
+
+	@Then("^I can see information about the user$")
+	public void i_can_see_information_about_the_user()  {
+		employeelist = PageFactory.initElements(driver, EmployeeListPage.class);
+		System.out.println(employeelist.checkOnDetailsPage());
+		assertEquals(employeelist.checkOnDetailsPage(),(firstname + " " + lastname));
+	}
+	
+	@After
+	public void teardown() {
+		driver.close();
+	}
+}

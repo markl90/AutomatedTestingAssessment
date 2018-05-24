@@ -1,0 +1,24 @@
+package com.qa.orangeHRM;
+
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class HomePage {
+	
+	
+	private String url;
+	private WebElement usernameBox;
+	private WebElement passwordBox;
+	
+	public void goToPage(WebDriver driver, String URL) {
+		driver.get(URL);
+		}
+	
+	public String getURL(WebDriver driver) {
+		url = driver.getCurrentUrl();
+		return url;
+		}
+
+}
